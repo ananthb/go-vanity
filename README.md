@@ -60,84 +60,13 @@ One JSON document, the `CONFIG` binding:
 | `description` | | shown on the index and module pages |
 | `source` | inferred for github.com, gitlab.com, codeberg.org | `github`, `gitlab`, `gitea`, `forgejo`, or `none` for no `go-source` tag |
 
-## Access
-
-The Worker has no authentication of its own: every path is public. What it
-serves is a repository URL per module; the code stays behind whatever
-authentication its forge has, so a private module can be listed here and
-fetched with `GOPRIVATE` and the forge's credentials.
-
-To gate the site itself, put Cloudflare Access in front of the hostname, as
-for any Worker on a custom domain. `go` cannot pass Access, though, and
-`go get`, proxy.golang.org and pkg.go.dev all fetch `?go-get=1` anonymously:
-an Access application over the host, or over any module's path, takes
-those modules offline for `go`.
-
 ## Deploying
 
 Each release carries the built Worker: `worker.mjs`, `runtime.mjs`,
 `wasm_exec.js` and `app.wasm`, one asset each and together in
 `go-vanity-worker.tar.gz`.
 
-### Terraform
-
-The Worker is four modules and a JSON binding, so the Cloudflare provider
-deploys it with no build step:
-
-```hcl
-locals {
-  go_vanity_version = "v0.1.0"
-  go_vanity_modules = {
-    "worker.mjs"   = "application/javascript+module"
-    "runtime.mjs"  = "application/javascript+module"
-    "wasm_exec.js" = "application/javascript+module"
-    "app.wasm"     = "application/wasm"
-  }
-}
-
-data "http" "go_vanity" {
-  for_each = local.go_vanity_modules
-  url      = "https://github.com/ananthb/go-vanity/releases/download/${local.go_vanity_version}/${each.key}"
-}
-
-resource "cloudflare_worker" "go_vanity" {
-  account_id = var.account_id
-  name       = "go-vanity"
-}
-
-resource "cloudflare_worker_version" "go_vanity" {
-  account_id         = var.account_id
-  worker_id          = cloudflare_worker.go_vanity.id
-  compatibility_date = "2026-09-01"
-  main_module        = "worker.mjs"
-  modules = [for name, type in local.go_vanity_modules : {
-    name           = name
-    content_type   = type
-    content_base64 = data.http.go_vanity[name].response_body_base64
-  }]
-  bindings = [{
-    name = "CONFIG"
-    type = "json"
-    json = jsonencode({ modules = { foo = "https://github.com/me/foo" } })
-  }]
-}
-
-resource "cloudflare_workers_deployment" "go_vanity" {
-  account_id  = var.account_id
-  script_name = cloudflare_worker.go_vanity.name
-  strategy    = "percentage"
-  versions    = [{ version_id = cloudflare_worker_version.go_vanity.id, percentage = 100 }]
-}
-
-resource "cloudflare_workers_custom_domain" "go_vanity" {
-  account_id = var.account_id
-  hostname   = "go.example.com"
-  service    = cloudflare_worker.go_vanity.name
-  zone_name  = "example.com"
-}
-```
-
-### Wrangler
+### Cloudflare
 
 Put your config under `[vars.CONFIG]` in `wrangler.toml` and your hostname in
 `routes`, unpack a release into `build/` (or run `./build.sh`), and

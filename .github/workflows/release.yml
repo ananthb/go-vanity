@@ -1,5 +1,5 @@
 # On a v* tag: build the Worker and attach its four modules to a release, one
-# asset each, so a deploy can fetch them by URL (see README.md, Terraform).
+# asset each and together in a tarball.
 name: release
 on:
   push:
