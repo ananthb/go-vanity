@@ -70,9 +70,8 @@ fetched with `GOPRIVATE` and the forge's credentials.
 To gate the site itself, put Cloudflare Access in front of the hostname, as
 for any Worker on a custom domain. `go` cannot pass Access, though, and
 `go get`, proxy.golang.org and pkg.go.dev all fetch `?go-get=1` anonymously:
-an Access application over a module's path takes that module offline for
-`go`. Gate the index or the module pages if you like, never the paths `go`
-resolves.
+an Access application over the host, or over any module's path, takes
+those modules offline for `go`.
 
 ## Deploying
 
