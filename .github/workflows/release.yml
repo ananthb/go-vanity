@@ -1,0 +1,24 @@
+# On a v* tag: build the Worker and attach its four modules to a release, one
+# asset each, so a deploy can fetch them by URL (see README.md, Terraform).
+name: release
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: cachix/install-nix-action@v31
+      - run: nix develop -c go test ./...
+      - run: nix develop -c ./build.sh
+      - run: |
+          tar -C build -czf go-vanity-worker.tar.gz .
+          (cd build && sha256sum *) > SHA256SUMS
+          gh release create "$GITHUB_REF_NAME" --generate-notes \
+            build/worker.mjs build/runtime.mjs build/wasm_exec.js build/app.wasm \
+            go-vanity-worker.tar.gz SHA256SUMS
+        env:
+          GH_TOKEN: ${{ github.token }}

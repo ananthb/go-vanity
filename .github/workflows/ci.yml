@@ -1,0 +1,15 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: cachix/install-nix-action@v31
+      - run: nix develop -c go vet ./...
+      - run: nix develop -c go test ./...
+      - run: nix develop -c ./build.sh
+      - run: nix develop -c wrangler deploy --dry-run

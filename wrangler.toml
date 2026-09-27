@@ -1,0 +1,19 @@
+# An example deploy: `./build.sh && wrangler deploy`, or unpack a release
+# tarball into build/ and skip the build. go.calculon.tech itself is deployed
+# by Terraform instead; see README.md.
+name = "go-vanity"
+main = "build/worker.mjs"
+compatibility_date = "2026-09-01"
+
+routes = [{ pattern = "go.example.com", custom_domain = true }]
+workers_dev = false
+
+[observability]
+enabled = true
+
+[vars.CONFIG]
+title = "go.example.com"
+
+[vars.CONFIG.modules]
+foo = "https://github.com/example/foo"
+"tools/bar" = { repo = "https://codeberg.org/example/bar", description = "Bar, for tools.", branch = "trunk" }
