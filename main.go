@@ -5,6 +5,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"sync"
 
@@ -13,7 +14,11 @@ import (
 )
 
 func config() (cfg vanity.Config, err error) {
-	err = json.Unmarshal([]byte(getenvJSON("CONFIG")), &cfg)
+	s, ok := lookupConfig("CONFIG")
+	if !ok {
+		return cfg, errors.New("CONFIG is not set")
+	}
+	err = json.Unmarshal([]byte(s), &cfg)
 	return
 }
 
