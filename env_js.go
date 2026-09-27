@@ -8,16 +8,17 @@ import (
 	"github.com/syumai/workers-go/cloudflare"
 )
 
-// getenvJSON reads a binding as JSON. A json binding, or a table under [vars]
-// in wrangler.toml, reaches the Worker as an object; a plain var as a string.
-func getenvJSON(name string) string {
+// lookupConfig returns a binding as text. A json binding, or a table under
+// [vars] in wrangler.toml, reaches the Worker as an object and is serialized;
+// a plain var is returned as is.
+func lookupConfig(name string) (string, bool) {
 	v := cloudflare.GetBinding(name)
 	switch v.Type() {
-	case js.TypeUndefined:
-		return "null"
+	case js.TypeUndefined, js.TypeNull:
+		return "", false
 	case js.TypeString:
-		return v.String()
+		return v.String(), true
 	default:
-		return js.Global().Get("JSON").Call("stringify", v).String()
+		return js.Global().Get("JSON").Call("stringify", v).String(), true
 	}
 }

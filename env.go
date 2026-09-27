@@ -4,9 +4,7 @@ package main
 
 import "os"
 
-func getenvJSON(name string) string {
-	if v, ok := os.LookupEnv(name); ok {
-		return v
-	}
-	return "null"
+// lookupConfig returns the environment variable as is.
+func lookupConfig(name string) (string, bool) {
+	return os.LookupEnv(name)
 }

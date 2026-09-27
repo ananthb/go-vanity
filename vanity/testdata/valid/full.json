@@ -1,0 +1,9 @@
+{
+  "browser": "pkgsite",
+  "index_redirect": "https://example.com/",
+  "host": "go.example.com",
+  "modules": {
+    "a": { "repo": "https://git.example.com/a.git", "vcs": "hg", "source": "forgejo" },
+    "b": { "repo": "https://gitlab.com/me/b/", "source": "gitlab" }
+  }
+}
