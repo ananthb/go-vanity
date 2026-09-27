@@ -29,7 +29,7 @@ A module's own `go.mod` has to declare the vanity path
 
 ## Configuration
 
-A JSON document:
+A JSON document, described by [config.schema.json](config.schema.json):
 
 ```json
 {

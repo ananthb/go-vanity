@@ -1,0 +1,8 @@
+{
+  "title": "go.example.com",
+  "modules": {
+    "foo": "https://github.com/me/foo",
+    "tools/bar": { "repo": "https://codeberg.org/me/bar", "branch": "trunk", "description": "Bar." },
+    "private": { "repo": "https://git.example.com/me/private", "source": "none" }
+  }
+}

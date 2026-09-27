@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/ananthb/go-vanity/main/config.schema.json",
+  "title": "go-vanity CONFIG",
+  "type": "object",
+  "required": ["modules"],
+  "properties": {
+    "modules": {
+      "description": "Module path under the host (e.g. \"foo\", \"tools/bar\") to repository. Prefixes match whole path segments, longest first.",
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          { "$ref": "#/$defs/repoURL" },
+          { "$ref": "#/$defs/module" }
+        ]
+      }
+    },
+    "browser": {
+      "description": "What a browser on a module path gets. go-get=1 requests always get the meta tags.",
+      "enum": ["page", "repo", "pkgsite"],
+      "default": "page"
+    },
+    "title": {
+      "description": "Index page heading. Defaults to the host.",
+      "type": "string"
+    },
+    "index_redirect": {
+      "description": "If set, / redirects here instead of serving the index.",
+      "type": "string",
+      "format": "uri"
+    },
+    "host": {
+      "description": "Module host, when it differs from the request's Host.",
+      "type": "string"
+    }
+  },
+  "$defs": {
+    "repoURL": {
+      "description": "Repository URL. A trailing slash and .git are stripped.",
+      "type": "string",
+      "format": "uri"
+    },
+    "module": {
+      "type": "object",
+      "required": ["repo"],
+      "properties": {
+        "repo": { "$ref": "#/$defs/repoURL" },
+        "vcs": {
+          "enum": ["git", "hg", "svn", "bzr", "fossil"],
+          "default": "git"
+        },
+        "branch": {
+          "description": "Branch used in the go-source link templates.",
+          "type": "string",
+          "default": "main"
+        },
+        "description": {
+          "description": "Shown on the index and module pages.",
+          "type": "string"
+        },
+        "source": {
+          "description": "go-source template style. Inferred for github.com, gitlab.com and codeberg.org; otherwise no go-source tag unless set. \"none\" suppresses it.",
+          "enum": ["github", "gitlab", "gitea", "forgejo", "none"]
+        }
+      }
+    }
+  }
+}
