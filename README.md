@@ -60,6 +60,18 @@ One JSON document, the `CONFIG` binding:
 | `description` | | shown on the index and module pages |
 | `source` | inferred for github.com, gitlab.com, codeberg.org | `github`, `gitlab`, `gitea`, `forgejo`, or `none` for no `go-source` tag |
 
+## Access
+
+The Worker has no authentication of its own: every path is public, and the
+config it serves is the only thing it knows. To restrict it, put Cloudflare
+Access in front of the hostname, the way any Worker on a custom domain is
+gated. Keep in mind who has to get through: `go get`, `proxy.golang.org` and
+pkg.go.dev fetch `?go-get=1` anonymously, so an Access application over the
+whole host takes public modules offline for everyone else. For private
+modules, gate only their paths (an Access application on
+`go.example.com/private*`) and give the people who use them a service token or
+a browser session; set `GOPRIVATE` so `go` skips the public proxy for them.
+
 ## Deploying
 
 Each release carries the built Worker: `worker.mjs`, `runtime.mjs`,
