@@ -1,7 +1,6 @@
 // Command go-vanity serves vanity import paths for Go modules, as a Cloudflare
-// Worker (GOOS=js GOARCH=wasm) or as a plain HTTP server on $PORT (default
-// 9900). Configuration is one JSON document, the CONFIG binding or environment
-// variable; see README.md.
+// Worker or as a plain HTTP server on $PORT (defaultc9900).
+// Configuration is one JSON document passed as a CONFIG binding or through the environment.
 package main
 
 import (
@@ -10,14 +9,12 @@ import (
 	"sync"
 
 	"github.com/syumai/workers-go"
-
 	"go.calculon.tech/go-vanity/vanity"
 )
 
-func config() (vanity.Config, error) {
-	var cfg vanity.Config
-	err := json.Unmarshal([]byte(getenvJSON("CONFIG")), &cfg)
-	return cfg, err
+func config() (cfg vanity.Config, err error) {
+	err = json.Unmarshal([]byte(getenvJSON("CONFIG")), &cfg)
+	return
 }
 
 func main() {

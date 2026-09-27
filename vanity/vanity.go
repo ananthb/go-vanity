@@ -3,8 +3,7 @@
 // `go get example.com/foo/bar` asks https://example.com/foo/bar?go-get=1 for a
 // go-import meta tag naming the repository that holds it. Handler answers that
 // from a Config, and shows people a page for the module with its install
-// command, source and docs. Moving a repository to another forge is then a
-// config change, not a change to every import that names it.
+// command, source and docs.
 package vanity
 
 import (
@@ -17,16 +16,16 @@ import (
 	"strings"
 )
 
-// Config is the whole configuration, one JSON document.
+// Config is the whole configuration.
 type Config struct {
 	// Module path under the host → repository.
 	Modules map[string]Module `json:"modules"`
-	// What a browser on a module path gets: "page" (default), or a 302 to the
+	// What to show a browser on a module path: "page" (default), or a 302 to the
 	// "repo" or to "pkgsite".
 	Browser string `json:"browser,omitempty"`
 	// Heading of the index page; defaults to the host.
 	Title string `json:"title,omitempty"`
-	// Where / redirects; empty serves the index page.
+	// Where / redirects to. Empty serves the index page.
 	IndexRedirect string `json:"index_redirect,omitempty"`
 	// The module host, when it differs from the request's.
 	Host string `json:"host,omitempty"`
@@ -193,7 +192,6 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		h.render(w, http.StatusOK, moduleHTML(page{Host: host, Title: title, Path: path, Module: m}))
 		return
 	}
-	// 302, not 301: where a module lives is the one thing meant to change.
 	target := m.Repo
 	if h.cfg.Browser == "pkgsite" {
 		target = "https://pkg.go.dev/" + path

@@ -1,5 +1,5 @@
-# An example deploy: `./build.sh && wrangler deploy`, or unpack a release
-# tarball into build/ and skip the build.
+# An example deploy: `./build.sh && wrangler deploy`.
+# Unpack a release tarball into build/ to skip the build.
 name = "go-vanity"
 main = "build/worker.mjs"
 compatibility_date = "2026-09-01"

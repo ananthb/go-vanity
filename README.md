@@ -2,17 +2,15 @@
 
 Vanity import paths for Go modules, as a Cloudflare Worker written in Go.
 
-`import "go.example.com/foo"` instead of `github.com/me/foo`:
-the import names a domain you own, and the domain names the repository. Moving
-the repository to another forge is a one-line config change, and nothing that
-imports it has to change. The idea, and an nginx version of it, is in
-[Don't couple your Go code to GitHub](https://iain.rocks/blog/dont-couple-your-go-code-to-github).
+`import "go.example.com/foo"` instead of `github.com/me/foo`.
+
+Use your domains instead of [coupl(_e_)ing your code to GitHub](https://iain.rocks/blog/dont-couple-your-go-code-to-github).
 
 It is a `net/http` handler compiled with TinyGo and served through
-[workers-go](https://github.com/syumai/workers-go): about 0.5 MB gzipped. The
-same code runs as a plain HTTP server anywhere else.
+[workers-go](https://github.com/syumai/workers-go).
+Run this code as a plain Go binary anywhere else.
 
-## What it serves
+## It serves
 
 | request | response |
 |---|---|
@@ -27,11 +25,11 @@ entry: the go-import prefix is the repository root and `go` reads the rest
 from `go.mod`.
 
 A module's own `go.mod` has to declare the vanity path
-(`module go.example.com/foo`), or `go get` refuses it.
+(`module go.example.com/foo`) for this to work.
 
 ## Configuration
 
-One JSON document, the `CONFIG` binding:
+A JSON document:
 
 ```json
 {
@@ -62,9 +60,8 @@ One JSON document, the `CONFIG` binding:
 
 ## Deploying
 
-Each release carries the built Worker: `worker.mjs`, `runtime.mjs`,
-`wasm_exec.js` and `app.wasm`, one asset each and together in
-`go-vanity-worker.tar.gz`.
+Each release contains the built Worker: `worker.mjs`, `runtime.mjs`,
+`wasm_exec.js`, and `app.wasm` together in `go-vanity-worker.tar.gz`.
 
 ### Cloudflare
 
@@ -85,6 +82,3 @@ nix develop
 go test ./...
 ./build.sh && wrangler dev
 ```
-
-TinyGo's `reflect` cannot run `html/template`, so the pages are written by
-hand in `vanity/html.go`, every value through `html.EscapeString`.

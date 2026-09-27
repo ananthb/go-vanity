@@ -6,9 +6,8 @@ import (
 	"strings"
 )
 
-// Pages are written by hand rather than with html/template, which TinyGo
-// cannot run (its reflect has no Type.NumOut). Every interpolated value goes
-// through e.
+// Pages are written by hand rather than with html/template, because TinyGo
+// does not support it.
 
 //go:embed style.css
 var style string

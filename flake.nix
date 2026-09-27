@@ -1,5 +1,5 @@
 {
-  description = "Vanity import paths for Go modules, as a Cloudflare Worker";
+  description = "Vanity import paths for Go modulesr";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
