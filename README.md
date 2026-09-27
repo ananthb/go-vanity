@@ -2,7 +2,7 @@
 
 Vanity import paths for Go modules, as a Cloudflare Worker written in Go.
 
-`import "go.calculon.tech/xmorph"` instead of `github.com/ananthb/xmorph`:
+`import "go.example.com/foo"` instead of `github.com/me/foo`:
 the import names a domain you own, and the domain names the repository. Moving
 the repository to another forge is a one-line config change, and nothing that
 imports it has to change. The idea, and an nginx version of it, is in
@@ -27,7 +27,7 @@ entry: the go-import prefix is the repository root and `go` reads the rest
 from `go.mod`.
 
 A module's own `go.mod` has to declare the vanity path
-(`module go.calculon.tech/xmorph`), or `go get` refuses it.
+(`module go.example.com/foo`), or `go get` refuses it.
 
 ## Configuration
 
@@ -82,7 +82,7 @@ Each release carries the built Worker: `worker.mjs`, `runtime.mjs`,
 ### Terraform
 
 The Worker is four modules and a JSON binding, so the Cloudflare provider
-deploys it with no build step. This is how go.calculon.tech runs:
+deploys it with no build step:
 
 ```hcl
 locals {
@@ -146,7 +146,7 @@ Put your config under `[vars.CONFIG]` in `wrangler.toml` and your hostname in
 ### Anywhere else
 
 ```
-CONFIG="$(cat config.json)" PORT=8080 go run go.calculon.tech/go-vanity@latest
+CONFIG="$(cat config.json)" PORT=8080 go run .
 ```
 
 ## Development

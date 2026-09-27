@@ -1,6 +1,6 @@
 # An example deploy: `./build.sh && wrangler deploy`, or unpack a release
-# tarball into build/ and skip the build. go.calculon.tech itself is deployed
-# by Terraform instead; see README.md.
+# tarball into build/ and skip the build. Terraform can deploy it instead;
+# see README.md.
 name = "go-vanity"
 main = "build/worker.mjs"
 compatibility_date = "2026-09-01"
