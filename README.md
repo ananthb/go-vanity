@@ -29,7 +29,9 @@ A module's own `go.mod` has to declare the vanity path
 
 ## Configuration
 
-A JSON document, described by [config.schema.json](config.schema.json):
+A JSON document, described by [config.schema.json](config.schema.json).
+
+For example,
 
 ```json
 {
@@ -42,21 +44,7 @@ A JSON document, described by [config.schema.json](config.schema.json):
 }
 ```
 
-| top level | default | |
-|---|---|---|
-| `modules` | required | module path under the host → repo URL, or an object below |
-| `browser` | `page` | `page`, or a 302 to the `repo` or to `pkgsite` |
-| `title` | the host | index page heading |
-| `index_redirect` | | a URL for `/` to redirect to instead |
-| `host` | the request's | the module host, if it differs |
-
-| module | default | |
-|---|---|---|
-| `repo` | required | clone URL, `.git` optional |
-| `vcs` | `git` | `git`, `hg`, `svn`, `bzr`, `fossil` |
-| `branch` | `main` | used in the source-link templates |
-| `description` | | shown on the index and module pages |
-| `source` | inferred for github.com, gitlab.com, codeberg.org | `github`, `gitlab`, `gitea`, `forgejo`, or `none` for no `go-source` tag |
+serves `go get` compatible meta tags pointing go.example.com/foo to https://github.com/me/foo.
 
 ## Deploying
 
