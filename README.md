@@ -62,15 +62,17 @@ One JSON document, the `CONFIG` binding:
 
 ## Access
 
-The Worker has no authentication of its own: every path is public, and the
-config it serves is the only thing it knows. To restrict it, put Cloudflare
-Access in front of the hostname, the way any Worker on a custom domain is
-gated. Keep in mind who has to get through: `go get`, `proxy.golang.org` and
-pkg.go.dev fetch `?go-get=1` anonymously, so an Access application over the
-whole host takes public modules offline for everyone else. For private
-modules, gate only their paths (an Access application on
-`go.example.com/private*`) and give the people who use them a service token or
-a browser session; set `GOPRIVATE` so `go` skips the public proxy for them.
+The Worker has no authentication of its own: every path is public. What it
+serves is a repository URL per module; the code stays behind whatever
+authentication its forge has, so a private module can be listed here and
+fetched with `GOPRIVATE` and the forge's credentials.
+
+To gate the site itself, put Cloudflare Access in front of the hostname, as
+for any Worker on a custom domain. `go` cannot pass Access, though, and
+`go get`, proxy.golang.org and pkg.go.dev all fetch `?go-get=1` anonymously:
+an Access application over a module's path takes that module offline for
+`go`. Gate the index or the module pages if you like, never the paths `go`
+resolves.
 
 ## Deploying
 
